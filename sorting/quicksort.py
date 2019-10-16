@@ -43,3 +43,8 @@ def test_quicksort():
     arr = [12, 7, 14, 9, 10, 11]
     quicksort(arr, 0, 5)
     assert arr == [7, 9, 10, 11, 12, 14]
+
+
+if __name__ == "__main__":
+    test_partition()
+    test_quicksort()
