@@ -75,6 +75,60 @@ class BinarySearchTree(object):
             curr_parent.right = x
         elif curr_parent.value >= x.value:
             curr_parent.left = x
+        x.parent = curr_parent
+
+    def deletion(self, x):
+        # Case 1
+        if x.left is None and x.right is None:
+            if x.parent is None:
+                # TODO: delete whole tree
+                x.value = None
+            elif x.parent.left == x:
+                x.parent.left = None
+            elif x.parent.right == x:
+                x.parent.right = None
+        # Case 2
+        elif x.left is None and x.right is not None:
+            x.right.parent = x.parent
+            if x.parent is None:
+                x_right_tmp = x.right
+                x.value = x_right_tmp.value
+                x.left = x_right_tmp.left
+                x.right = x_right_tmp.right
+            elif x.parent.left == x:
+                x.parent.left = x.right
+            elif x.parent.right == x:
+                x.parent.right = x.right
+        elif x.left is not None and x.right is None:
+            x.left.parent = x.parent
+            if x.parent is None:
+                x_left_tmp = x.left
+                x.value = x_left_tmp.value
+                x.left = x_left_tmp.left
+                x.right = x_left_tmp.right
+            elif x.parent.left == x:
+                x.parent.left = x.left
+            elif x.parent.right == x:
+                x.parent.right = x.left
+        # Case 3
+        elif x.left is not None and x.right is not None:
+            # successor has no left child
+            successor = self.successor(x)  # copy value
+            x.value = successor.value
+            # moving successor's right child up
+            if successor.parent.right == successor:
+                successor.parent.right = successor.right
+            elif successor.parent.left == successor:
+                successor.parent.left = successor.right
+            if successor.right is not None:
+                successor.right.parent = successor.parent
+
+    def inorder_traversal(self, x):
+        if x is None:
+            return
+        self.inorder_traversal(x.left)
+        print(x)
+        self.inorder_traversal(x.right)
 
 
 def make_tree():
@@ -137,7 +191,33 @@ def test_insertion():
     bst.insertion(Node(1))
     bst.insertion(Node(14))
     assert tree.left.left.left.left.value == 1
+    assert tree.left.left.left.left.parent.value == 2
     assert tree.left.right.right.right.value == 14
+
+
+def test_deletion():
+    tree = make_tree()
+    bst = BinarySearchTree(tree)
+    print("Original Tree")
+    bst.inorder_traversal(tree)
+    print("Delete left most node")
+    bst.deletion(tree.left.left.left)
+    bst.inorder_traversal(tree)
+    print("Delete left - right - right node")
+    bst.deletion(tree.left.right.right)
+    bst.inorder_traversal(tree)
+    print("Delete root node")
+    bst.deletion(tree)
+    bst.inorder_traversal(tree)
+    print("Delete root node")
+    bst.deletion(tree)
+    bst.inorder_traversal(tree)
+    print("Delete root node")
+    bst.deletion(tree)
+    bst.inorder_traversal(tree)
+    print("Delete root node")
+    bst.deletion(tree)
+    bst.inorder_traversal(tree)
 
 
 if __name__ == "__main__":
@@ -147,3 +227,4 @@ if __name__ == "__main__":
     test_successor()
     test_predecessor()
     test_insertion()
+    test_deletion()
