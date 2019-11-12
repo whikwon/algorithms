@@ -3,8 +3,8 @@
 - https://stackoverflow.com/questions/19472530/representing-graphs-data-structure-in-python
 """
 
-from queue import Queue
 from collections import defaultdict
+from queue import Queue
 
 
 class Graph(object):
