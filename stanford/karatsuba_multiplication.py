@@ -4,6 +4,24 @@ def single_digit_mul(x, y):
     return x * y
 
 
+def divmod10(x, y):
+    assert isinstance(x, int), isinstance(y, int)
+    num_digits = len(str(x))
+    if num_digits <= y:
+        return 0
+    else:
+        return int(str(x)[:-y])
+
+
+def remainder10(x, y):
+    assert isinstance(x, int), isinstance(y, int)
+    num_digits = len(str(x))
+    if num_digits < y:
+        return x
+    else:
+        return int(str(x)[-y:])
+
+
 def karatsuba_mul(x, y):
     num_x_digits = len(str(x))
     num_y_digits = len(str(y))
@@ -13,11 +31,11 @@ def karatsuba_mul(x, y):
 
     num_digits_div = max(num_x_digits, num_y_digits) // 2
 
-    a = x // 10**num_digits_div
-    b = x % 10**num_digits_div
+    a = divmod10(x, num_digits_div)
+    b = remainder10(x, num_digits_div)
 
-    c = y // 10**num_digits_div
-    d = y % 10**num_digits_div
+    c = divmod10(y, num_digits_div)
+    d = remainder10(y, num_digits_div)
 
     ad_bc = karatsuba_mul(a + b, c + d) - karatsuba_mul(b, d) - karatsuba_mul(
         a, c)

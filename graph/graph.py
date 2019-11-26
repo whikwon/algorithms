@@ -8,6 +8,7 @@ from queue import Queue
 
 
 class Graph(object):
+
     def __init__(self, directed=True):
         self.adj = defaultdict(set)
         self.directed = directed
@@ -22,6 +23,7 @@ class Graph(object):
 
 
 class Vertex(object):
+
     def __init__(self, name):
         self.name = name
         self.color = None

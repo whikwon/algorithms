@@ -30,7 +30,7 @@ def mergesort(arr):
 
     p, r = 0, len(arr)
     q = split(arr)
-    return merge(mergesort(arr[p: q]), mergesort(arr[q: r]))
+    return merge(mergesort(arr[p:q]), mergesort(arr[q:r]))
 
 
 def test_merge():

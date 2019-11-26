@@ -1,4 +1,5 @@
 class Node(object):
+
     def __init__(self, value):
         self.value = value
         self.left = None
@@ -9,6 +10,7 @@ class Node(object):
 
 
 class BinaryTree(object):
+
     def __init__(self, root):
         self.root = Node(root)
 
