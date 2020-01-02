@@ -1,48 +1,64 @@
 import random
 
 
-def partition(arr, p, q):
-    """Assume that pivot index is p"""
-    pivot_idx = random.randint(p, q)
-    if pivot_idx != p:
-        arr[p], arr[pivot_idx] = arr[pivot_idx], arr[p]
+def partition(arr, p, q, pivot):
+    i = p
+    r = None
 
-    pivot = arr[p]
-    r = p + 1
+    for j in range(p, q + 1):
+        if arr[j] < pivot:
+            if i != j:
+                if i == r:
+                    r = j
+                arr[j], arr[i] = arr[i], arr[j]
+            i += 1
+        elif arr[j] == pivot:
+            r = j
 
-    for i in range(p + 1, q + 1):
-        if arr[i] < pivot:
-            arr[r], arr[i] = arr[i], arr[r]
-            r += 1
-
-    arr[r - 1], arr[p] = arr[p], arr[r - 1]
-    return r - 1
+    arr[r], arr[i] = arr[i], arr[r]
+    return i
 
 
-def randomized_selection(arr, p, q, idx):
-    num_arr = len(arr)
-    assert idx < num_arr and num_arr >= 1
+def randomized_selection(arr, p, q, val):
+    num_arr = len(arr[p:q + 1])
 
-    if len(arr) == 1:
-        return arr[0]
+    if num_arr == 1:
+        return p
 
-    pivot = partition(arr, p, q)
-    if pivot == idx:
-        return arr[pivot]
-    elif pivot > idx:
-        return randomized_selection(arr, p, pivot - 1, idx)
-    elif pivot < idx:
-        return randomized_selection(arr, pivot + 1, q, idx)
+    r = random.randint(p, q)
+    pivot = arr[r]
+
+    r = partition(arr, p, q, pivot)
+    if pivot == val:
+        return r
+    elif pivot > val:
+        return randomized_selection(arr, p, r - 1, val)
+    elif pivot < val:
+        return randomized_selection(arr, r + 1, q, val)
 
 
 def test_randomized_selection():
-    arr = [1, 5, 3, 2, 4, 9, 6, 7]
-    idx = 5
-    assert randomized_selection(arr, 0, len(arr) - 1, idx) == sorted(arr)[idx]
 
-    arr = [1]
-    idx = 0
-    assert randomized_selection(arr, 0, len(arr) - 1, idx) == sorted(arr)[idx]
+    def assertion(arr, start, end, val):
+        assert randomized_selection(arr, start, end, val) == sorted(
+            arr[start:end + 1]).index(val)
+
+    # 1-elem
+    arr = [5, 3, 1]
+    assertion(arr, 0, len(arr) - 3, 5)
+
+    # 2-elem
+    arr = [5, 3, 1]
+    assertion(arr, 0, len(arr) - 2, 3)
+
+    # 3-elem
+    arr = [5, 3, 1]
+    assertion(arr, 0, len(arr) - 1, 1)
+
+    arr = [random.randint(0, 1000000) for i in range(1000)]
+    for val in arr:
+        arr_copy = arr.copy()
+        assertion(arr_copy, 0, len(arr_copy) - 1, val)
 
 
 def main():
