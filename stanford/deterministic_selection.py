@@ -27,12 +27,12 @@ def get_medians_of_sorted_5_elem_splits(arr):
     medians = []
 
     while num_arr >= i + 5:
-        sub_arr = sorted(arr[i: i + 5])
+        sub_arr = sorted(arr[i:i + 5])
         medians.append(sub_arr[2])
         i += 5
 
     if num_arr - i:
-        sub_arr = sorted(arr[i: num_arr])
+        sub_arr = sorted(arr[i:num_arr])
         medians.append(sub_arr[(num_arr - i - 1) // 2])
     return medians
 
@@ -45,11 +45,11 @@ def median_of_medians(arr):
 
 
 def deterministic_selection(arr, p, q, val):
-    num_arr = len(arr[p: q + 1])
+    num_arr = len(arr[p:q + 1])
     if num_arr == 1:
         return p
 
-    pivot = median_of_medians(arr[p: q + 1])
+    pivot = median_of_medians(arr[p:q + 1])
 
     r = partition(arr, p, q, pivot)
 
@@ -123,8 +123,10 @@ def test_median_of_medians():
 
 
 def test_deterministic_selection():
+
     def assertion(arr, start, end, val):
-        assert deterministic_selection(arr, start, end, val) == sorted(arr[start: end + 1]).index(val)
+        assert deterministic_selection(arr, start, end, val) == sorted(
+            arr[start:end + 1]).index(val)
 
     # 1-elem
     arr = [5, 3, 1]

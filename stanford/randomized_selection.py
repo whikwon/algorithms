@@ -20,7 +20,7 @@ def partition(arr, p, q, pivot):
 
 
 def randomized_selection(arr, p, q, val):
-    num_arr = len(arr[p: q + 1])
+    num_arr = len(arr[p:q + 1])
 
     if num_arr == 1:
         return p
@@ -38,8 +38,10 @@ def randomized_selection(arr, p, q, val):
 
 
 def test_randomized_selection():
+
     def assertion(arr, start, end, val):
-        assert randomized_selection(arr, start, end, val) == sorted(arr[start: end + 1]).index(val)
+        assert randomized_selection(arr, start, end, val) == sorted(
+            arr[start:end + 1]).index(val)
 
     # 1-elem
     arr = [5, 3, 1]
