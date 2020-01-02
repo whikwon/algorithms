@@ -1,5 +1,7 @@
+import random
+
+
 def partition(arr, p, q, pivot):
-    """Assume that pivot index is p"""
     i = p
     r = None
 
@@ -15,23 +17,6 @@ def partition(arr, p, q, pivot):
 
     arr[r], arr[i] = arr[i], arr[r]
     return i
-
-
-def deterministic_selection(arr, p, q, val):
-    num_arr = len(arr[p: q + 1])
-    if num_arr == 1:
-        return p
-
-    pivot = median_of_medians(arr[p: q + 1])
-
-    r = partition(arr, p, q, pivot)
-
-    if pivot == val:
-        return r
-    elif pivot < val:
-        return deterministic_selection(arr, r + 1, q, val)
-    elif pivot > val:
-        return deterministic_selection(arr, p, r - 1, val)
 
 
 def get_medians_of_sorted_5_elem_splits(arr):
@@ -59,6 +44,23 @@ def median_of_medians(arr):
     return median_of_medians(medians)
 
 
+def deterministic_selection(arr, p, q, val):
+    num_arr = len(arr[p: q + 1])
+    if num_arr == 1:
+        return p
+
+    pivot = median_of_medians(arr[p: q + 1])
+
+    r = partition(arr, p, q, pivot)
+
+    if pivot == val:
+        return r
+    elif pivot < val:
+        return deterministic_selection(arr, r + 1, q, val)
+    elif pivot > val:
+        return deterministic_selection(arr, p, r - 1, val)
+
+
 def test_get_medians_of_sorted_5_elem_splits():
     arr = [1, 5, 3, 7, 9, 12, 14, 15, 20, 4, 28]
     assert get_medians_of_sorted_5_elem_splits(arr) == [5, 14, 28]
@@ -70,43 +72,76 @@ def test_get_medians_of_sorted_5_elem_splits():
     assert get_medians_of_sorted_5_elem_splits(arr) == [1]
 
 
-def test_median_of_medians():
-    arr = [1, 5, 3, 7, 9, 12, 14, 15, 20, 4, 28]
-    assert median_of_medians(arr) == 14
-
-    arr = [1, 5, 3, 7, 9, 12, 14, 15, 20, 4]
-    assert median_of_medians(arr) == 5
-
-
-def test_deterministic_selection():
-    arr = [1, 5, 3, 7, 9, 12, 14, 15, 20, 4, 28]
-    assert deterministic_selection(arr, 0, 10, 20) == 9
-
-    arr = [1, 5, 3, 7, 9, 12, 14, 15, 20, 4, 28]
-    assert deterministic_selection(arr, 0, 10, 15) == 8
-
-    arr = [1, 5, 3, 7, 9, 12, 14, 15, 20, 4, 28]
-    assert deterministic_selection(arr, 0, 10, 9) == 5
-
-
 def test_partition():
-    arr = [1, 2, 9, 8, 4, 5, 6, 7, 10, 14, 11]
-    assert partition(arr, 0, len(arr) - 1, 11) == 9
-    assert arr == [1, 2, 9, 8, 4, 5, 6, 7, 10, 11, 14]
-
-    arr = [1, 2, 9, 8, 4, 7, 10]
-    assert partition(arr, 0, len(arr) - 1, 7) == 3
-    assert arr == [1, 2, 4, 7, 9, 8, 10]
-
-    arr = [1, 2]
-    assert partition(arr, 0, len(arr) - 1, 2) == 1
-    assert arr == [1, 2]
-
+    # 1-item
     arr = [1]
     assert partition(arr, 0, len(arr) - 1, 1) == 0
     assert arr == [1]
 
+    # all smaller values before pivot
+    arr = [1, 2, 5, 4, 9, 7]
+    assert partition(arr, 0, len(arr) - 1, 5) == 3
+    assert arr == [1, 2, 4, 5, 9, 7]
+
+    # all larger values before pivot
+    arr = [3, 4, 5, 1, 2]
+    assert partition(arr, 0, len(arr) - 1, 3) == 2
+    assert arr == [1, 2, 3, 5, 4]
+
+    # duplicated values: first one
+    arr = [3, 4, 3, 3, 1, 2]
+    assert partition(arr, 0, len(arr) - 1, 3) == 2
+    assert arr == [1, 2, 3, 3, 3, 4]
+
+    # start with large value
+    arr = [5, 1, 2, 3, 4]
+    assert partition(arr, 0, len(arr) - 1, 5) == 4
+    assert arr == [1, 2, 3, 4, 5]
+
+    # start with small value
+    arr = [1, 2, 3, 4, 5]
+    assert partition(arr, 0, len(arr) - 1, 1) == 0
+    assert arr == [1, 2, 3, 4, 5]
+
+
+def test_median_of_medians():
+    # 1-elem
+    arr = [1]
+    assert median_of_medians(arr) == 1
+
+    # less than 5-elem
+    arr = [1, 3, 5]
+    assert median_of_medians(arr) == 3
+
+    # 10-elem
+    arr = [1, 5, 3, 7, 9, 12, 14, 15, 20, 4]
+    assert median_of_medians(arr) == 5
+
+    # 11-elem
     arr = [1, 5, 3, 7, 9, 12, 14, 15, 20, 4, 28]
+    assert median_of_medians(arr) == 14
+
+
+def test_deterministic_selection():
+    def assertion(arr, start, end, val):
+        assert deterministic_selection(arr, start, end, val) == sorted(arr[start: end + 1]).index(val)
+
+    # 1-elem
+    arr = [5, 3, 1]
+    assertion(arr, 0, len(arr) - 3, 5)
+
+    # 2-elem
+    arr = [5, 3, 1]
+    assertion(arr, 0, len(arr) - 2, 3)
+
+    # 3-elem
+    arr = [5, 3, 1]
+    assertion(arr, 0, len(arr) - 1, 1)
+
+    arr = [random.randint(0, 1000000) for i in range(1000)]
+    for val in arr:
+        arr_copy = arr.copy()
+        assertion(arr_copy, 0, len(arr_copy) - 1, val)
 
 
 def main():
