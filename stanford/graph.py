@@ -12,11 +12,13 @@ class Graph(object):
     def __init__(self, directed=True):
         self.adj = defaultdict(set)
         self.directed = directed
+        self.vertices = set()
 
     def add_edge(self, u, v):
         """undirected graph"""
         assert isinstance(u, Vertex) and isinstance(v, Vertex)
         self.adj[u].add(v)
+        self.vertices.union([u, v])
 
         if not self.directed:
             self.adj[v].add(u)
@@ -36,7 +38,7 @@ class Vertex(object):
 
 
 def bfs(G, s):
-    vertices = list(G.adj.keys())
+    vertices = list(G.vertices)
 
     # node init
     for u in vertices:
@@ -83,7 +85,7 @@ def dfs_visit(G, u, time):
 
 
 def dfs(G):
-    vertices = list(G.adj.keys())
+    vertices = list(G.vertices)
 
     # node init
     for u in vertices:
