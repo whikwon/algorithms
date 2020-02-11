@@ -8,6 +8,7 @@ from queue import Queue
 
 
 class Graph(object):
+    """Undirected graph"""
 
     node_list_factory = list
     adjlist_inner_dict_factory = dict
@@ -19,7 +20,6 @@ class Graph(object):
         self.adj = self.adjlist_outer_dict_factory()
 
     def add_edge(self, u, v, **attr):
-        """undirected graph"""
         assert isinstance(u, Node) and isinstance(v, Node)
 
         if u not in self.node:
@@ -36,7 +36,7 @@ class Graph(object):
 
 
 class DiGraph(Graph):
-    """directed graph"""
+    """Directed graph"""
 
     def __init__(self):
         self.node = self.node_list_factory()
