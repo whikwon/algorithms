@@ -3,7 +3,7 @@ Topological Sort
 Example from: Introduction to Algorithms, 3rd Edition. pp.613, Figure 22.7
 """
 
-from graph import Graph, Vertex
+from graph import DiGraph, Node
 
 
 def dfs_visit(G, u, time, vertices_sorted):
@@ -25,7 +25,7 @@ def dfs_visit(G, u, time, vertices_sorted):
 
 def topological_sort(G):
     """Topological sort for Directed Acyclic Graphs"""
-    vertices = list(G.vertices)
+    vertices = G.node
 
     # node init
     for u in vertices:
@@ -42,16 +42,16 @@ def topological_sort(G):
 
 
 def main():
-    G = Graph(directed=True)
-    undershorts = Vertex("undershorts")
-    pants = Vertex("pants")
-    belt = Vertex("belt")
-    shirt = Vertex("shirt")
-    tie = Vertex("tie")
-    jacket = Vertex("jacket")
-    socks = Vertex("socks")
-    shoes = Vertex("shoes")
-    watch = Vertex("watch")
+    G = DiGraph()
+    undershorts = Node("undershorts")
+    pants = Node("pants")
+    belt = Node("belt")
+    shirt = Node("shirt")
+    tie = Node("tie")
+    jacket = Node("jacket")
+    socks = Node("socks")
+    shoes = Node("shoes")
+    watch = Node("watch")
 
     G.add_edge(shirt, belt)
     G.add_edge(shirt, tie)

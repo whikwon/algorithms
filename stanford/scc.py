@@ -3,10 +3,7 @@ Strongly Connected Components,
 Example from: Introduction to Algorithms, 3rd Edition. pp.616, Figure 22.9
 """
 
-from collections import defaultdict
-from copy import deepcopy
-
-from graph import Graph, Vertex
+from graph import DiGraph, Node
 from topological_sort import topological_sort
 
 
@@ -46,12 +43,11 @@ def _scc(G, vertices):
 
 def scc(G):
     """Strongly Connected Components"""
-    G_reversed = deepcopy(G)
-    G_reversed.adj = defaultdict(set)
+    G_reversed = DiGraph()
 
-    for u in G.adj.keys():
+    for u in G.adj:
         for v in G.adj[u]:
-            G_reversed.adj[v].add(u)
+            G_reversed.add_edge(v, u, attr=G.adj[u][v])
 
     # topologically high to low
     sorted_vertices = topological_sort(G)[::-1]
@@ -61,15 +57,15 @@ def scc(G):
 
 
 def main():
-    G = Graph()
-    a = Vertex("a")
-    b = Vertex("b")
-    c = Vertex("c")
-    d = Vertex("d")
-    e = Vertex("e")
-    f = Vertex("f")
-    g = Vertex("g")
-    h = Vertex("h")
+    G = DiGraph()
+    a = Node("a")
+    b = Node("b")
+    c = Node("c")
+    d = Node("d")
+    e = Node("e")
+    f = Node("f")
+    g = Node("g")
+    h = Node("h")
 
     G.add_edge(a, b)
     G.add_edge(e, a)

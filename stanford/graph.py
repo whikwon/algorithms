@@ -1,30 +1,68 @@
 """
 - https://www.geeksforgeeks.org/breadth-first-search-or-bfs-for-a-graph/
 - https://stackoverflow.com/questions/19472530/representing-graphs-data-structure-in-python
+- https://github.com/networkx/networkx
 """
 
-from collections import defaultdict
 from queue import Queue
 
 
 class Graph(object):
+    """Undirected graph"""
 
-    def __init__(self, directed=True):
-        self.adj = defaultdict(set)
-        self.directed = directed
-        self.vertices = set()
+    node_list_factory = list
+    adjlist_inner_dict_factory = dict
+    adjlist_outer_dict_factory = dict
+    edge_attr_dict_factory = dict
 
-    def add_edge(self, u, v):
-        """undirected graph"""
-        assert isinstance(u, Vertex) and isinstance(v, Vertex)
-        self.adj[u].add(v)
-        self.vertices.union([u, v])
+    def __init__(self):
+        self.node = self.node_list_factory()
+        self.adj = self.adjlist_outer_dict_factory()
 
-        if not self.directed:
-            self.adj[v].add(u)
+    def add_edge(self, u, v, **attr):
+        assert isinstance(u, Node) and isinstance(v, Node)
+
+        if u not in self.node:
+            self.node.append(u)
+            self.adj[u] = self.adjlist_inner_dict_factory()
+        if v not in self.node:
+            self.node.append(v)
+            self.adj[v] = self.adjlist_inner_dict_factory()
+
+        datadict = self.adj[u].get(v, self.edge_attr_dict_factory())
+        datadict.update(attr)
+        self.adj[u][v] = datadict
+        self.adj[v][u] = datadict
 
 
-class Vertex(object):
+class DiGraph(Graph):
+    """Directed graph"""
+
+    def __init__(self):
+        self.node = self.node_list_factory()
+        self.succ = self.adj = self.adjlist_outer_dict_factory()
+        self.pred = self.adjlist_outer_dict_factory()
+        self.edge_attr = self.edge_attr_dict_factory()
+
+    def add_edge(self, u, v, **attr):
+        assert isinstance(u, Node) and isinstance(v, Node)
+
+        if u not in self.succ:
+            self.node.append(u)
+            self.succ[u] = self.adjlist_inner_dict_factory()
+            self.pred[u] = self.adjlist_inner_dict_factory()
+        if v not in self.succ:
+            self.node.append(v)
+            self.succ[v] = self.adjlist_inner_dict_factory()
+            self.pred[v] = self.adjlist_inner_dict_factory()
+
+        datadict = self.adj[u].get(v, self.edge_attr_dict_factory())
+        datadict.update(attr)
+        self.succ[u][v] = datadict
+        self.pred[v][u] = datadict
+
+
+class Node(object):
 
     def __init__(self, name):
         self.name = name
@@ -34,11 +72,11 @@ class Vertex(object):
         self.pi = None
 
     def __repr__(self):
-        return f"Vertex({self.name}, {self.color}, {self.d}, {self.f})"
+        return f"Node({self.name}, {self.color}, {self.d}, {self.f})"
 
 
 def bfs(G, s):
-    vertices = list(G.vertices)
+    vertices = G.node
 
     # node init
     for u in vertices:
@@ -85,7 +123,7 @@ def dfs_visit(G, u, time):
 
 
 def dfs(G):
-    vertices = list(G.vertices)
+    vertices = G.node
 
     # node init
     for u in vertices:
@@ -99,15 +137,15 @@ def dfs(G):
 
 
 def main():
-    G0 = Graph(directed=False)
-    v = Vertex("v")
-    r = Vertex("r")
-    s = Vertex("s")
-    w = Vertex("w")
-    t = Vertex("t")
-    x = Vertex("x")
-    y = Vertex("y")
-    u = Vertex("u")
+    G0 = DiGraph()
+    v = Node("v")
+    r = Node("r")
+    s = Node("s")
+    w = Node("w")
+    t = Node("t")
+    x = Node("x")
+    y = Node("y")
+    u = Node("u")
 
     G0.add_edge(v, r)
     G0.add_edge(r, s)
@@ -121,12 +159,12 @@ def main():
     G0.add_edge(u, y)
 
     G1 = Graph()
-    x = Vertex("x")
-    u = Vertex("u")
-    v = Vertex("v")
-    y = Vertex("y")
-    w = Vertex("w")
-    z = Vertex("z")
+    x = Node("x")
+    u = Node("u")
+    v = Node("v")
+    y = Node("y")
+    w = Node("w")
+    z = Node("z")
 
     G1.add_edge(u, x)
     G1.add_edge(u, v)
