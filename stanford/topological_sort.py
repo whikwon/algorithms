@@ -38,7 +38,7 @@ def topological_sort(G):
     for u in vertices:
         if u.color == "white":
             time, vertices_sorted = dfs_visit(G, u, time, vertices_sorted)
-    return vertices_sorted
+    return vertices_sorted[::-1]
 
 
 def main():
