@@ -9,17 +9,51 @@ from queue import Queue
 
 class Graph(object):
 
-    def __init__(self, directed=True):
-        self.adj = defaultdict(set)
-        self.directed = directed
+    def __init__(self):
+        self.node = list()
+        self.adj = defaultdict(dict)
+        self.edge_attr = defaultdict(dict)
 
-    def add_edge(self, u, v):
+    def add_edge(self, u, v, **attr):
         """undirected graph"""
         assert isinstance(u, Vertex) and isinstance(v, Vertex)
-        self.adj[u].add(v)
 
-        if not self.directed:
-            self.adj[v].add(u)
+        if u not in self.node:
+            self.node.append(u)
+        if v not in self.node:
+            self.node.append(v)
+
+        datadict = self.adj[u].get(v, dict())
+        datadict.update(attr)
+        self.adj[u][v] = datadict
+        self.adj[v][u] = datadict
+
+
+class DiGraph(Graph):
+
+    def __init__(self):
+        self.node = list()
+        self.succ = self.adj = dict()
+        self.pred = dict()
+        self.edge_attr = dict()
+
+    def add_edge(self, u, v, **attr):
+        """directed graph"""
+        assert isinstance(u, Vertex) and isinstance(v, Vertex)
+
+        if u not in self.succ:
+            self.node.append(u)
+            self.succ[u] = dict()
+            self.pred[u] = dict()
+        if v not in self.succ:
+            self.node.append(v)
+            self.succ[v] = dict()
+            self.pred[v] = dict()
+
+        datadict = self.succ[u].get(v, dict())
+        datadict.update(attr)
+        self.succ[u][v] = datadict
+        self.pred[v][u] = datadict
 
 
 class Vertex(object):
@@ -35,7 +69,7 @@ class Vertex(object):
 
 
 def bfs(G, s):
-    vertices = list(G.adj.keys())
+    vertices = G.node
 
     # node init
     for u in vertices:
@@ -80,7 +114,7 @@ def dfs_visit(G, u, time):
 
 
 def dfs(G):
-    vertices = list(G.adj.keys())
+    vertices = G.node
 
     # node init
     for u in vertices:
@@ -94,7 +128,7 @@ def dfs(G):
 
 
 def main():
-    G0 = Graph(directed=False)
+    G0 = DiGraph()
     v = Vertex("v")
     r = Vertex("r")
     s = Vertex("s")
