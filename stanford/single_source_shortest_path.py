@@ -48,6 +48,8 @@ def dijkstra(G, s):
 
     S = {}
     Q = []  # min-priority queue
+    # added to conditionally push node to Q
+    seen = {}
     c = count()
 
     pop = heappop
@@ -55,17 +57,17 @@ def dijkstra(G, s):
 
     push(Q, (s.d, next(c), s))
 
-    idx = 0
     while Q:
         dist, _, u = pop(Q)
-        idx += 1
         if u in S:
             continue
         # shortest path for 'u' are calculated over before checking adj
         S[u] = dist
         for v in G.adj[u]:
             w = G.adj[u][v].get('w', 1)
-            relax(u, v, w)
+            uv_dist = dist + w
+            if v not in S and (v not in seen or uv_dist < seen[v]):
+                relax(u, v, w)
             push(Q, (v.d, next(c), v))
     return S
 
